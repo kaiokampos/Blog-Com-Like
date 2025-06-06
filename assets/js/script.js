@@ -19,9 +19,16 @@ async function getPosts() {
             
             let button = document.createElement('button');
             button.innerHTML = 'Like';
+            button.addEventListener('click', () =>{
+                addLike(post.id);
+                let likeCount = getLikesFromId(post.id);
+                small.innerHTML = likeCount + ' Likes';
+
+            });
             
             let small = document.createElement('small');
-            small.innerHTML = '19 Likes';
+            let likeCount = getLikesFromId(post.id);
+            small.innerHTML = likeCount + ' Likes';
             
             article.appendChild(p);
             article.appendChild(button);
@@ -44,6 +51,25 @@ function getLikesFromId(id) {
     if (!postLike) return 0;
 
     return postLike.count;
+}
+
+function addLike(id) {
+
+    let likesString = localStorage.getItem('likes');
+    if (!likesString){
+        likesString = "[]";
+    }
+
+    let likes = JSON.parse(likesString);
+    let index = likes.findIndex(item => item.id === id);
+
+    if (index > -1) {
+        likes[index].count++;
+    } else {
+        likes.push({id: id, count: 1});
+    }
+
+    localStorage.setItem('likes', JSON.stringify(likes));
 }
 
 getPosts();
